@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../core/theme/spacing.dart';
+import '../../services/deep_link_service.dart';
 import '../../widgets/sidebar/sidebar.dart';
 import '../../widgets/cards/vehicle_card.dart';
 import '../../widgets/cards/media_card.dart';
@@ -23,6 +25,26 @@ enum _HomeDestination {
   navigation,
   media,
   phone,
+}
+
+/// Deep-link path segment for each destination (e.g. `/drive_coach`). Home has
+/// no segment — it's the root path.
+const Map<_HomeDestination, String> _destinationSlugs = {
+  _HomeDestination.academics: 'drive_coach',
+  _HomeDestination.fleetCockpit: 'fleet',
+  _HomeDestination.navigation: 'navigation',
+  _HomeDestination.media: 'media',
+  _HomeDestination.phone: 'phone',
+};
+
+String? _slugFor(_HomeDestination destination) => _destinationSlugs[destination];
+
+_HomeDestination _destinationForSlug(String? slug) {
+  if (slug == null) return _HomeDestination.home;
+  for (final entry in _destinationSlugs.entries) {
+    if (entry.value == slug) return entry.key;
+  }
+  return _HomeDestination.home;
 }
 
 /// Home dashboard screen.
@@ -80,9 +102,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool _phoneCallActive = false;
   int _currentNavIndex = 0;
 
+  // URL already reflects the destination we're about to request (deep link
+  // load, or browser back/forward) — skip the next history push.
+  bool _suppressNextUrlPush = false;
+
   @override
   void initState() {
     super.initState();
+
+    if (kIsWeb) {
+      final initialDestination = _destinationForSlug(currentDeepLinkSlug());
+      if (initialDestination != _HomeDestination.home) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          _suppressNextUrlPush = true;
+          _requestDestination(initialDestination);
+        });
+      }
+      listenForPopState((slug) {
+        if (!mounted) return;
+        _suppressNextUrlPush = true;
+        _requestDestination(_destinationForSlug(slug));
+      });
+    }
 
     // ── Setup Navigation Animation ───────────────────────────────────────────
     _navController = AnimationController(
@@ -252,6 +294,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         if (currentDestination == _HomeDestination.phone && _phoneCallActive) {
           _pendingDestination = null;
           _isTransitioning = false;
+          _syncUrlFor(_HomeDestination.phone);
           setState(() {
             _activeDestination = _HomeDestination.phone;
             _currentNavIndex = 5;
@@ -275,7 +318,17 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     }
   }
 
+  void _syncUrlFor(_HomeDestination destination) {
+    if (!kIsWeb) return;
+    if (_suppressNextUrlPush) {
+      _suppressNextUrlPush = false;
+      return;
+    }
+    pushDeepLinkPath(_slugFor(destination));
+  }
+
   void _completeDestinationTransition(_HomeDestination destination) {
+    _syncUrlFor(destination);
     if (destination == _HomeDestination.home) {
       _finishDestinationTransition();
       return;
