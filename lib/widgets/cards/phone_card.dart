@@ -1,0 +1,202 @@
+import 'package:flutter/material.dart';
+
+import '../../core/theme/colors.dart';
+
+class PhoneCard extends StatelessWidget {
+  final VoidCallback? onTap;
+
+  const PhoneCard({super.key, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.textPrimary.withValues(alpha: 0.13), width: 1),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'PHONE',
+                style: TextStyle(
+                  color: AppColors.textPrimary.withValues(alpha: 0.5),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.textPrimary.withValues(alpha: 0.4),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.only(top: 4),
+                          width: 10,
+                          height: 2,
+                          decoration: BoxDecoration(
+                            color: AppColors.textPrimary.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(1),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 4),
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.textPrimary.withValues(alpha: 0.4),
+                              width: 1,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Prototype handset',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Demo device · no active call',
+                          style: TextStyle(
+                            color: AppColors.textPrimary.withValues(alpha: 0.5),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const _IndicatorRow(),
+                ],
+              ),
+              const Spacer(),
+              Center(
+                child: Text(
+                  'NO ACTIVE CALL',
+                  style: TextStyle(
+                    color: AppColors.textPrimary.withValues(alpha: 0.38),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _IndicatorRow extends StatelessWidget {
+  const _IndicatorRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            _SignalBar(height: 6, active: true),
+            const SizedBox(width: 2),
+            _SignalBar(height: 8, active: true),
+            const SizedBox(width: 2),
+            _SignalBar(height: 10, active: true),
+            const SizedBox(width: 2),
+            _SignalBar(height: 12, active: false),
+          ],
+        ),
+        const SizedBox(width: 8),
+        Container(
+          width: 20,
+          height: 10,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: AppColors.textPrimary.withValues(alpha: 0.5),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+          child: Stack(
+            children: [
+              Container(
+                width: 14,
+                margin: const EdgeInsets.all(1),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00E676),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          width: 2,
+          height: 4,
+          decoration: BoxDecoration(
+            color: AppColors.textPrimary.withValues(alpha: 0.5),
+            borderRadius: const BorderRadius.horizontal(
+              right: Radius.circular(1),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SignalBar extends StatelessWidget {
+  final double height;
+  final bool active;
+
+  const _SignalBar({required this.height, required this.active});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 3,
+      height: height,
+      decoration: BoxDecoration(
+        color: active
+            ? AppColors.textPrimary.withValues(alpha: 0.8)
+            : AppColors.textPrimary.withValues(alpha: 0.2),
+        borderRadius: BorderRadius.circular(1),
+      ),
+    );
+  }
+}

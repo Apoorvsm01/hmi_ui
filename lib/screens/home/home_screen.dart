@@ -1,0 +1,952 @@
+import 'package:flutter/material.dart';
+
+import '../../core/theme/spacing.dart';
+import '../../widgets/sidebar/sidebar.dart';
+import '../../widgets/cards/vehicle_card.dart';
+import '../../widgets/cards/media_card.dart';
+import '../../widgets/cards/navigation_card.dart';
+import '../../widgets/cards/phone_card.dart';
+import '../../widgets/climate/climate_bar.dart';
+import '../navigation/navigation_screen_content.dart';
+import '../phone/phone_screen.dart';
+import '../media/media_screen_content.dart';
+import '../academics/academics_screen_content.dart';
+import '../fleet/fleet_cockpit_screen.dart';
+
+// ── Shared layout constants ───────────────────────────────────────────────────
+const double _kClimateBarHeight = 80.0;
+
+enum _HomeDestination {
+  home,
+  academics,
+  fleetCockpit,
+  navigation,
+  media,
+  phone,
+}
+
+/// Home dashboard screen.
+///
+/// Features fluid automotive expansion overlays:
+/// - Navigation card expands full-screen when tapped.
+/// - Phone card expands full-screen with the communication hub when tapped.
+/// - Media card expands into Sections 1 & 2 (covering Vehicle and Media/Phone),
+///   while the Navigation Card remains anchored in Section 3 on the far right.
+/// The bottom ClimateBar and the outer sidebar remain visible at all times.
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+  // ── Navigation Card Expansion Animation ─────────────────────────────────────
+  late final AnimationController _navController;
+  late final Animation<double> _navExpandProgress;
+  late final Animation<double> _navOtherCardsOpacity;
+  late final Animation<double> _navContentOpacity;
+  bool _navigationExpanded = false;
+
+  // ── Phone Card Expansion Animation ──────────────────────────────────────────
+  late final AnimationController _phoneController;
+  late final Animation<double> _phoneExpandProgress;
+  late final Animation<double> _phoneOtherCardsOpacity;
+  late final Animation<double> _phoneContentOpacity;
+  bool _phoneExpanded = false;
+
+  // ── Media / Music Expansion Animation (Sections 1 & 2) ──────────────────────
+  late final AnimationController _mediaController;
+  late final Animation<double> _mediaExpandProgress;
+  late final Animation<double> _mediaOtherCardsOpacity;
+  late final Animation<double> _mediaContentOpacity;
+  bool _mediaExpanded = false;
+
+  // ── Academics Expansion Animation ───────────────────────────────────────────
+  late final AnimationController _academicsController;
+  late final Animation<double> _academicsOtherCardsOpacity;
+  late final Animation<double> _academicsContentOpacity;
+  bool _academicsExpanded = false;
+
+  // ── Fleet Co-Pilot Expansion Animation ──────────────────────────────────────
+  late final AnimationController _fleetCockpitController;
+  late final Animation<double> _fleetCockpitOtherCardsOpacity;
+  late final Animation<double> _fleetCockpitContentOpacity;
+  bool _fleetCockpitExpanded = false;
+
+  _HomeDestination _activeDestination = _HomeDestination.home;
+  _HomeDestination? _pendingDestination;
+  bool _isTransitioning = false;
+  bool _phoneCallActive = false;
+  int _currentNavIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // ── Setup Navigation Animation ───────────────────────────────────────────
+    _navController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _navExpandProgress = CurvedAnimation(
+      parent: _navController,
+      curve: Curves.easeInOutCubic,
+    );
+    _navOtherCardsOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _navController,
+        curve: const Interval(0.0, 0.40, curve: Curves.easeIn),
+      ),
+    );
+    _navContentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _navController,
+        curve: const Interval(0.65, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
+    // ── Setup Phone Animation ────────────────────────────────────────────────
+    _phoneController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _phoneExpandProgress = CurvedAnimation(
+      parent: _phoneController,
+      curve: Curves.easeInOutCubic,
+    );
+    _phoneOtherCardsOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _phoneController,
+        curve: const Interval(0.0, 0.40, curve: Curves.easeIn),
+      ),
+    );
+    _phoneContentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _phoneController,
+        curve: const Interval(0.65, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
+    // ── Setup Media / Music Animation ────────────────────────────────────────
+    _mediaController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _mediaExpandProgress = CurvedAnimation(
+      parent: _mediaController,
+      curve: Curves.easeInOutCubic,
+    );
+    _mediaOtherCardsOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _mediaController,
+        curve: const Interval(0.0, 0.40, curve: Curves.easeIn),
+      ),
+    );
+    _mediaContentOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _mediaController,
+        curve: const Interval(0.65, 1.0, curve: Curves.easeOut),
+      ),
+    );
+
+    // ── Setup Academics Animation ────────────────────────────────────────────
+    _academicsController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _academicsOtherCardsOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _academicsController,
+        curve: const Interval(0.0, 0.40, curve: Curves.easeIn),
+      ),
+    );
+    _academicsContentOpacity = CurvedAnimation(
+      parent: _academicsController,
+      curve: const Interval(0.15, 1.0, curve: Curves.easeOut),
+    );
+
+    // ── Setup Fleet Co-Pilot Animation ───────────────────────────────────────
+    _fleetCockpitController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _fleetCockpitOtherCardsOpacity = Tween<double>(begin: 1.0, end: 0.0)
+        .animate(
+          CurvedAnimation(
+            parent: _fleetCockpitController,
+            curve: const Interval(0.0, 0.40, curve: Curves.easeIn),
+          ),
+        );
+    _fleetCockpitContentOpacity = CurvedAnimation(
+      parent: _fleetCockpitController,
+      curve: const Interval(0.15, 1.0, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _navController.dispose();
+    _phoneController.dispose();
+    _mediaController.dispose();
+    _academicsController.dispose();
+    _fleetCockpitController.dispose();
+    super.dispose();
+  }
+
+  // ── Navigation Expansion Controls ───────────────────────────────────────────
+
+  AnimationController _controllerFor(_HomeDestination destination) {
+    switch (destination) {
+      case _HomeDestination.academics:
+        return _academicsController;
+      case _HomeDestination.fleetCockpit:
+        return _fleetCockpitController;
+      case _HomeDestination.navigation:
+        return _navController;
+      case _HomeDestination.media:
+        return _mediaController;
+      case _HomeDestination.phone:
+        return _phoneController;
+      case _HomeDestination.home:
+        throw StateError('Home does not have an expansion controller');
+    }
+  }
+
+  void _setExpandedState(_HomeDestination destination, bool expanded) {
+    switch (destination) {
+      case _HomeDestination.academics:
+        _academicsExpanded = expanded;
+        break;
+      case _HomeDestination.fleetCockpit:
+        _fleetCockpitExpanded = expanded;
+        break;
+      case _HomeDestination.navigation:
+        _navigationExpanded = expanded;
+        break;
+      case _HomeDestination.media:
+        _mediaExpanded = expanded;
+        break;
+      case _HomeDestination.phone:
+        _phoneExpanded = expanded;
+        break;
+      case _HomeDestination.home:
+        break;
+    }
+  }
+
+  void _requestDestination(_HomeDestination destination) {
+    if (_phoneCallActive && destination != _HomeDestination.phone) return;
+    if (_isTransitioning) {
+      _pendingDestination = destination;
+      return;
+    }
+    if (_activeDestination == destination) return;
+
+    _isTransitioning = true;
+    final currentDestination = _activeDestination;
+
+    if (currentDestination != _HomeDestination.home) {
+      _controllerFor(currentDestination).reverse().whenCompleteOrCancel(() {
+        if (!mounted) return;
+        if (currentDestination == _HomeDestination.phone && _phoneCallActive) {
+          _pendingDestination = null;
+          _isTransitioning = false;
+          setState(() {
+            _activeDestination = _HomeDestination.phone;
+            _currentNavIndex = 5;
+          });
+          _phoneController.forward().whenCompleteOrCancel(() {
+            if (mounted) {
+              _finishDestinationTransition();
+            }
+          });
+          return;
+        }
+        setState(() {
+          _setExpandedState(currentDestination, false);
+          _activeDestination = _HomeDestination.home;
+          _currentNavIndex = 0;
+        });
+        _completeDestinationTransition(destination);
+      });
+    } else {
+      _completeDestinationTransition(destination);
+    }
+  }
+
+  void _completeDestinationTransition(_HomeDestination destination) {
+    if (destination == _HomeDestination.home) {
+      _finishDestinationTransition();
+      return;
+    }
+
+    final currentNavIndex = switch (destination) {
+      _HomeDestination.academics => 1,
+      _HomeDestination.fleetCockpit => 2,
+      _HomeDestination.navigation => 3,
+      _HomeDestination.media => 4,
+      _HomeDestination.phone => 5,
+      _HomeDestination.home => 0,
+    };
+
+    setState(() {
+      _setExpandedState(destination, true);
+      _activeDestination = destination;
+      _currentNavIndex = currentNavIndex;
+    });
+
+    _controllerFor(destination).forward().whenCompleteOrCancel(() {
+      if (mounted) {
+        _finishDestinationTransition();
+      }
+    });
+  }
+
+  void _finishDestinationTransition() {
+    if (!mounted) return;
+    _isTransitioning = false;
+    final pendingDestination = _pendingDestination;
+    _pendingDestination = null;
+    if (pendingDestination != null &&
+        pendingDestination != _activeDestination) {
+      _requestDestination(pendingDestination);
+    }
+  }
+
+  void _openNavigation() {
+    _requestDestination(_HomeDestination.navigation);
+  }
+
+  void _closeNavigation() {
+    _requestDestination(_HomeDestination.home);
+  }
+
+  void _openPhone() {
+    _requestDestination(_HomeDestination.phone);
+  }
+
+  void _closePhone() {
+    _requestDestination(_HomeDestination.home);
+  }
+
+  void _openMedia() {
+    _requestDestination(_HomeDestination.media);
+  }
+
+  void _closeMedia() {
+    _requestDestination(_HomeDestination.home);
+  }
+
+  void _closeAcademics() {
+    _requestDestination(_HomeDestination.home);
+  }
+
+  void _closeFleetCockpit() {
+    _requestDestination(_HomeDestination.home);
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+
+  @override
+  Widget build(BuildContext context) {
+    // Opacity for the base card (Vehicle Card)
+    final otherCardsOpacity = _phoneExpanded
+        ? _phoneOtherCardsOpacity
+        : (_mediaExpanded
+              ? _mediaOtherCardsOpacity
+              : (_academicsExpanded
+                    ? _academicsOtherCardsOpacity
+                    : (_fleetCockpitExpanded
+                          ? _fleetCockpitOtherCardsOpacity
+                          : _navOtherCardsOpacity)));
+
+    return PopScope<Object?>(
+      canPop: _activeDestination == _HomeDestination.home,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          _requestDestination(_HomeDestination.home);
+        }
+      },
+      child: Scaffold(
+        body: Row(
+          children: [
+            Sidebar(
+              selectedIndex: _currentNavIndex,
+              interactionLocked: _phoneCallActive,
+              onItemSelected: (index) {
+                final destination = switch (index) {
+                  0 => _HomeDestination.home,
+                  1 => _HomeDestination.academics,
+                  2 => _HomeDestination.fleetCockpit,
+                  3 => _HomeDestination.navigation,
+                  4 => _HomeDestination.media,
+                  5 => _HomeDestination.phone,
+                  _ => null,
+                };
+                if (destination != null) {
+                  _requestDestination(destination);
+                }
+              },
+            ),
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final availableHeight =
+                      constraints.maxHeight -
+                      _kClimateBarHeight -
+                      AppSpacing.lg * 2;
+                  final availableWidth =
+                      constraints.maxWidth - AppSpacing.lg * 2;
+
+                  final centerCardHeight =
+                      (availableHeight - AppSpacing.lg) / 2;
+                  final totalHorizontalSpacing = AppSpacing.lg * 2;
+                  final contentWidth = availableWidth - totalHorizontalSpacing;
+                  // 21:9 ultrawide optimized proportions: 7 : 4 : 5
+                  final vehicleWidth = (contentWidth / 16) * 7;
+                  final centerWidth = (contentWidth / 16) * 4;
+                  final navWidth = (contentWidth / 16) * 5;
+
+                  // ── Nav card geometry in content coordinates (Section 3) ────
+                  final navCardLeft =
+                      vehicleWidth +
+                      AppSpacing.lg +
+                      centerWidth +
+                      AppSpacing.lg;
+                  const navCardTop = 0.0;
+                  final navCardWidth = navWidth;
+                  final navCardHeight = availableHeight;
+
+                  // ── Phone card geometry in content coordinates ──────────────
+                  final phoneCardLeft = vehicleWidth + AppSpacing.lg;
+                  final phoneCardTop = centerCardHeight + AppSpacing.lg;
+                  final phoneCardWidth = centerWidth;
+                  final phoneCardHeight = centerCardHeight;
+
+                  // ── Media card compact starting geometry ────────────────────
+                  final mediaCardLeft = vehicleWidth + AppSpacing.lg;
+                  const mediaCardTop = 0.0;
+                  final mediaCardWidth = centerWidth;
+                  final mediaCardHeight = centerCardHeight;
+
+                  // ── Music Expanded Target geometry (Sections 1 & 2) ─────────
+                  // Exactly spans Section 1 (vehicle) + spacing + Section 2 (center)
+                  const musicExpandedLeft = 0.0;
+                  const musicExpandedTop = 0.0;
+                  final musicExpandedWidth =
+                      vehicleWidth + AppSpacing.lg + centerWidth;
+                  final musicExpandedHeight = availableHeight;
+
+                  // Full content area geometry (for full-screen Nav/Phone)
+                  const fullLeft = 0.0;
+                  const fullTop = 0.0;
+                  final fullWidth = availableWidth;
+                  final fullHeight = availableHeight;
+
+                  // ── Animated Nav Overlay (Section 3 or Fullscreen) ────────────
+                  Widget buildNavOverlay() {
+                    return AnimatedBuilder(
+                      animation: _navExpandProgress,
+                      builder: (context, child) {
+                        final t = _navExpandProgress.value;
+                        final left = _lerpDouble(navCardLeft, fullLeft, t);
+                        final top = _lerpDouble(navCardTop, fullTop, t);
+                        final width = _lerpDouble(navCardWidth, fullWidth, t);
+                        final height = _lerpDouble(
+                          navCardHeight,
+                          fullHeight,
+                          t,
+                        );
+
+                        return Positioned(
+                          left: left,
+                          top: top,
+                          width: width,
+                          height: height,
+                          child: IgnorePointer(
+                            ignoring:
+                                _phoneExpanded ||
+                                _academicsExpanded ||
+                                _fleetCockpitExpanded,
+                            child: FadeTransition(
+                              // When Phone expands, Nav fades out. When Media expands, Nav STAYS VISIBLE!
+                              opacity: _phoneOtherCardsOpacity,
+                              child: child!,
+                            ),
+                          ),
+                        );
+                      },
+                      child: _NavCardOverlay(
+                        expandProgress: _navExpandProgress,
+                        navContentOpacity: _navContentOpacity,
+                        navigationExpanded: _navigationExpanded,
+                        onTap: _openNavigation,
+                        onClose: _closeNavigation,
+                      ),
+                    );
+                  }
+
+                  // ── Animated Phone Overlay ───────────────────────────────────
+                  Widget buildPhoneOverlay() {
+                    return AnimatedBuilder(
+                      animation: _phoneExpandProgress,
+                      builder: (context, child) {
+                        final t = _phoneExpandProgress.value;
+                        final left = _lerpDouble(phoneCardLeft, fullLeft, t);
+                        final top = _lerpDouble(phoneCardTop, fullTop, t);
+                        final width = _lerpDouble(phoneCardWidth, fullWidth, t);
+                        final height = _lerpDouble(
+                          phoneCardHeight,
+                          fullHeight,
+                          t,
+                        );
+
+                        final parentOpacity = _navigationExpanded
+                            ? _navOtherCardsOpacity
+                            : (_mediaExpanded ? _mediaOtherCardsOpacity : null);
+
+                        Widget content = child!;
+                        if (parentOpacity != null) {
+                          content = FadeTransition(
+                            opacity: parentOpacity,
+                            child: content,
+                          );
+                        }
+
+                        return Positioned(
+                          left: left,
+                          top: top,
+                          width: width,
+                          height: height,
+                          child: IgnorePointer(
+                            ignoring:
+                                _navigationExpanded ||
+                                _mediaExpanded ||
+                                _academicsExpanded ||
+                                _fleetCockpitExpanded,
+                            child: content,
+                          ),
+                        );
+                      },
+                      child: _PhoneCardOverlay(
+                        expandProgress: _phoneExpandProgress,
+                        phoneContentOpacity: _phoneContentOpacity,
+                        phoneExpanded: _phoneExpanded,
+                        keepContentMounted: _phoneCallActive,
+                        onTap: _openPhone,
+
+                        onClose: _closePhone,
+                        onCallStateChanged: (isActive) {
+                          if (mounted) {
+                            setState(() => _phoneCallActive = isActive);
+                          }
+                        },
+                      ),
+                    );
+                  }
+
+                  // ── Animated Media / Music Overlay (Sections 1 & 2) ─────────
+                  Widget buildMediaOverlay() {
+                    return AnimatedBuilder(
+                      animation: _mediaExpandProgress,
+                      builder: (context, child) {
+                        final t = _mediaExpandProgress.value;
+                        final left = _lerpDouble(
+                          mediaCardLeft,
+                          musicExpandedLeft,
+                          t,
+                        );
+                        final top = _lerpDouble(
+                          mediaCardTop,
+                          musicExpandedTop,
+                          t,
+                        );
+                        final width = _lerpDouble(
+                          mediaCardWidth,
+                          musicExpandedWidth,
+                          t,
+                        );
+                        final height = _lerpDouble(
+                          mediaCardHeight,
+                          musicExpandedHeight,
+                          t,
+                        );
+
+                        final parentOpacity = _navigationExpanded
+                            ? _navOtherCardsOpacity
+                            : (_phoneExpanded ? _phoneOtherCardsOpacity : null);
+
+                        Widget content = child!;
+                        if (parentOpacity != null) {
+                          content = FadeTransition(
+                            opacity: parentOpacity,
+                            child: content,
+                          );
+                        }
+
+                        return Positioned(
+                          left: left,
+                          top: top,
+                          width: width,
+                          height: height,
+                          child: IgnorePointer(
+                            ignoring:
+                                _navigationExpanded ||
+                                _phoneExpanded ||
+                                _academicsExpanded ||
+                                _fleetCockpitExpanded,
+                            child: content,
+                          ),
+                        );
+                      },
+                      child: _MediaCardOverlay(
+                        expandProgress: _mediaExpandProgress,
+                        mediaContentOpacity: _mediaContentOpacity,
+                        mediaExpanded: _mediaExpanded,
+                        onTap: _openMedia,
+                        onClose: _closeMedia,
+                      ),
+                    );
+                  }
+
+                  // ── Academics Overlay (full-screen, sidebar-only entry) ─────
+                  Widget buildAcademicsOverlay() {
+                    return AnimatedBuilder(
+                      animation: _academicsContentOpacity,
+                      builder: (context, child) {
+                        return Positioned(
+                          left: fullLeft,
+                          top: fullTop,
+                          width: fullWidth,
+                          height: fullHeight,
+                          child: IgnorePointer(
+                            ignoring: !_academicsExpanded,
+                            child: _academicsContentOpacity.value > 0
+                                ? FadeTransition(
+                                    opacity: _academicsContentOpacity,
+                                    child: AcademicsScreenContent(
+                                      onClose: _closeAcademics,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  // ── Fleet Co-Pilot Overlay (full-screen, sidebar-only entry) ─
+                  Widget buildFleetCockpitOverlay() {
+                    return AnimatedBuilder(
+                      animation: _fleetCockpitContentOpacity,
+                      builder: (context, child) {
+                        return Positioned(
+                          left: fullLeft,
+                          top: fullTop,
+                          width: fullWidth,
+                          height: fullHeight,
+                          child: IgnorePointer(
+                            ignoring: !_fleetCockpitExpanded,
+                            child: _fleetCockpitContentOpacity.value > 0
+                                ? FadeTransition(
+                                    opacity: _fleetCockpitContentOpacity,
+                                    child: FleetCockpitScreenContent(
+                                      onClose: _closeFleetCockpit,
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      // ── Content area ────────────────────────────────────────
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              // ── Base card row (Vehicle card in tree) ────────
+                              _AnimatedRow(
+                                vehicleWidth: vehicleWidth,
+                                centerWidth: centerWidth,
+                                navWidth: navWidth,
+                                centerCardHeight: centerCardHeight,
+                                otherCardsOpacity: otherCardsOpacity,
+                              ),
+
+                              // ── Overlays: active expanding overlay on top ───
+                              if (_phoneExpanded) ...[
+                                buildNavOverlay(),
+                                buildMediaOverlay(),
+                                buildAcademicsOverlay(),
+                                buildFleetCockpitOverlay(),
+                                buildPhoneOverlay(),
+                              ] else if (_navigationExpanded) ...[
+                                buildPhoneOverlay(),
+                                buildMediaOverlay(),
+                                buildAcademicsOverlay(),
+                                buildFleetCockpitOverlay(),
+                                buildNavOverlay(),
+                              ] else if (_mediaExpanded) ...[
+                                buildPhoneOverlay(),
+                                buildAcademicsOverlay(),
+                                buildFleetCockpitOverlay(),
+                                buildNavOverlay(),
+                                buildMediaOverlay(),
+                              ] else if (_academicsExpanded) ...[
+                                buildPhoneOverlay(),
+                                buildMediaOverlay(),
+                                buildNavOverlay(),
+                                buildFleetCockpitOverlay(),
+                                buildAcademicsOverlay(),
+                              ] else if (_fleetCockpitExpanded) ...[
+                                buildPhoneOverlay(),
+                                buildMediaOverlay(),
+                                buildNavOverlay(),
+                                buildAcademicsOverlay(),
+                                buildFleetCockpitOverlay(),
+                              ] else ...[
+                                buildPhoneOverlay(),
+                                buildMediaOverlay(),
+                                buildNavOverlay(),
+                                buildAcademicsOverlay(),
+                                buildFleetCockpitOverlay(),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // ── Climate bar – always visible ─────────────────────────
+                      const ClimateBar(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static double _lerpDouble(double a, double b, double t) => a + (b - a) * t;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Base card row (Vehicle card and layout placeholders)
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _AnimatedRow extends StatelessWidget {
+  final double vehicleWidth;
+  final double centerWidth;
+  final double navWidth;
+  final double centerCardHeight;
+  final Animation<double> otherCardsOpacity;
+
+  const _AnimatedRow({
+    required this.vehicleWidth,
+    required this.centerWidth,
+    required this.navWidth,
+    required this.centerCardHeight,
+    required this.otherCardsOpacity,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Vehicle card (Section 1)
+        FadeTransition(
+          opacity: otherCardsOpacity,
+          child: SizedBox(width: vehicleWidth, child: const VehicleCard()),
+        ),
+
+        const SizedBox(width: AppSpacing.lg),
+
+        // Section 2 placeholders (Media & Phone)
+        SizedBox(
+          width: centerWidth,
+          child: Column(
+            children: [
+              // Media placeholder (same size so layout remains stable)
+              SizedBox(height: centerCardHeight),
+              const SizedBox(height: AppSpacing.lg),
+              // Phone placeholder (same size so layout remains stable)
+              SizedBox(height: centerCardHeight),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: AppSpacing.lg),
+
+        // Section 3 placeholder (Navigation)
+        SizedBox(width: navWidth),
+      ],
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The nav card overlay that starts as the compact card and expands full-screen
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _NavCardOverlay extends StatelessWidget {
+  final Animation<double> expandProgress;
+  final Animation<double> navContentOpacity;
+  final bool navigationExpanded;
+  final VoidCallback onTap;
+  final VoidCallback onClose;
+
+  const _NavCardOverlay({
+    required this.expandProgress,
+    required this.navContentOpacity,
+    required this.navigationExpanded,
+    required this.onTap,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      // Only tappable when in the compact state
+      onTap: navigationExpanded ? null : onTap,
+      child: AnimatedBuilder(
+        animation: expandProgress,
+        builder: (context, child) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // ── Compact NavigationCard (fades out as nav content fades in) ──
+              Opacity(
+                opacity: (1.0 - navContentOpacity.value).clamp(0.0, 1.0),
+                child: const NavigationCard(),
+              ),
+
+              // ── Full-screen navigation content (fades in) ─────────────────
+              if (navContentOpacity.value > 0)
+                FadeTransition(
+                  opacity: navContentOpacity,
+                  child: NavigationScreenContent(onClose: onClose),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The phone card overlay that starts as the compact card and expands full-screen
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _PhoneCardOverlay extends StatelessWidget {
+  final Animation<double> expandProgress;
+  final Animation<double> phoneContentOpacity;
+  final bool phoneExpanded;
+  final bool keepContentMounted;
+  final VoidCallback onTap;
+  final VoidCallback onClose;
+  final ValueChanged<bool> onCallStateChanged;
+
+  const _PhoneCardOverlay({
+    required this.expandProgress,
+    required this.phoneContentOpacity,
+    required this.phoneExpanded,
+    required this.keepContentMounted,
+    required this.onTap,
+    required this.onClose,
+    required this.onCallStateChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      // Only tappable when in the compact state
+      onTap: phoneExpanded ? null : onTap,
+      child: AnimatedBuilder(
+        animation: expandProgress,
+        builder: (context, child) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // ── Compact PhoneCard (fades out as phone content fades in) ──
+              Opacity(
+                opacity: (1.0 - phoneContentOpacity.value).clamp(0.0, 1.0),
+                child: const PhoneCard(),
+              ),
+
+              // ── Full-screen PhoneScreen content (fades in) ─────────────────
+              if (phoneContentOpacity.value > 0 || keepContentMounted)
+                FadeTransition(
+                  opacity: phoneContentOpacity,
+                  child: PhoneScreen(
+                    onClose: onClose,
+                    onCallStateChanged: onCallStateChanged,
+                  ),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The media card overlay that starts as compact and expands to Sections 1 & 2
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _MediaCardOverlay extends StatelessWidget {
+  final Animation<double> expandProgress;
+  final Animation<double> mediaContentOpacity;
+  final bool mediaExpanded;
+  final VoidCallback onTap;
+  final VoidCallback onClose;
+
+  const _MediaCardOverlay({
+    required this.expandProgress,
+    required this.mediaContentOpacity,
+    required this.mediaExpanded,
+    required this.onTap,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      // Only tappable when in the compact state
+      onTap: mediaExpanded ? null : onTap,
+      child: AnimatedBuilder(
+        animation: expandProgress,
+        builder: (context, child) {
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              // ── Compact MediaCard (fades out as music content fades in) ──
+              Opacity(
+                opacity: (1.0 - mediaContentOpacity.value).clamp(0.0, 1.0),
+                child: const MediaCard(),
+              ),
+
+              // ── Full Sections 1 & 2 MediaScreenContent (fades in) ─────────
+              if (mediaContentOpacity.value > 0)
+                FadeTransition(
+                  opacity: mediaContentOpacity,
+                  child: MediaScreenContent(onClose: onClose),
+                ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
