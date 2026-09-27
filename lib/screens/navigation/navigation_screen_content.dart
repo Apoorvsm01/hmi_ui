@@ -33,7 +33,7 @@ class NavDestination {
   });
 }
 
-/// Full-Screen Interactive Automotive GPS Navigation System for SkyUI
+/// Full-Screen Interactive Automotive GPS Navigation System for HMI UI
 ///
 /// Features:
 /// - Smooth animated travel of the GPS vehicle puck to any selected destination

@@ -6,11 +6,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:skyui/models/fleet_models.dart';
-import 'package:skyui/services/fleet_mission_service.dart';
-import 'package:skyui/widgets/fleet/fleet_copilot_panel.dart';
-import 'package:skyui/widgets/fleet/fleet_telemetry_panel.dart';
-import 'package:skyui/widgets/fleet/hazard_route_map.dart';
+import 'package:hmi_ui/models/fleet_models.dart';
+import 'package:hmi_ui/services/fleet_mission_service.dart';
+import 'package:hmi_ui/widgets/fleet/fleet_copilot_panel.dart';
+import 'package:hmi_ui/widgets/fleet/fleet_telemetry_panel.dart';
+import 'package:hmi_ui/widgets/fleet/hazard_route_map.dart';
 
 void main() {
   group('Fleet data models', () {

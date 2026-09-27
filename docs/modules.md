@@ -1,4 +1,4 @@
-# SkyUI Module Catalog
+# HMI UI Module Catalog
 
 Package version: `0.3.0-alpha+1`
 
@@ -6,7 +6,7 @@ Status: current UI prototype inventory
 
 ## System overview
 
-SkyUI is a dashboard shell with reusable cards and three large stateful prototype screens. The modules are not yet decoupled domain applications and do not have a shared session/service layer.
+HMI UI is a dashboard shell with reusable cards and three large stateful prototype screens. The modules are not yet decoupled domain applications and do not have a shared session/service layer.
 
 ```text
 Header
@@ -33,7 +33,7 @@ Path: `lib/widgets/header/`
 
 Current behavior:
 
-- SkyUI brand text.
+- HMI UI brand text.
 - Fixed demo time `10:42`.
 - Simulated Bluetooth, cellular, and Wi-Fi semantics.
 - Debug-only parked/driving toggle linked to `DriveModeService`.

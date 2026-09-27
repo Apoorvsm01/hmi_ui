@@ -1,4 +1,4 @@
-# SkyUI Automotive HMI Audit
+# HMI UI Automotive HMI Audit
 
 Datum: 24. septembar 2026
 
@@ -8,7 +8,7 @@ Konkretna komponenta: Flutter UI / lokalni web simulator
 
 ## Zaključak
 
-SkyUI je dovoljno funkcionalan kao interni, mock-based HMI prototip za cockpit simulator na landscape baseline-u 1680×720. Nije spreman za povezivanje na vozilo, distribuciju vozačima ili bilo kakvu bezbednosnu tvrdnju. Trenutni kod nema backend, remote telemetry, crash reporting, analytics ili cloud sync.
+HMI UI je dovoljno funkcionalan kao interni, mock-based HMI prototip za cockpit simulator na landscape baseline-u 1680×720. Nije spreman za povezivanje na vozilo, distribuciju vozačima ili bilo kakvu bezbednosnu tvrdnju. Trenutni kod nema backend, remote telemetry, crash reporting, analytics ili cloud sync.
 
 Najvažnije preostale blokere su:
 
@@ -332,8 +332,8 @@ Za potpuno offline automotive runtime potrebno je bundlovati odobren font u repo
 
 Trenutno:
 
-- `namespace = "com.example.skyui"`;
-- `applicationId = "com.example.skyui"`;
+- `namespace = "com.example.hmi_ui"`;
+- `applicationId = "com.example.hmi_ui"`;
 - release build koristi `signingConfigs.getByName("debug")`.
 
 Potrebni su ownership-definisan reverse-DNS identitet, produkcioni keystore van repozitorijuma, fail-closed release config i verifikacija potpisa artefakta. Ne kreirati ključeve bez vlasničkog i release procesa.

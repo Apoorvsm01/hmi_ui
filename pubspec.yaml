@@ -1,5 +1,5 @@
-name: skyui
-description: SkyUI Automotive Infotainment System
+name: hmi_ui
+description: HMI UI Automotive Infotainment System
 publish_to: "none"
 
 version: 0.3.0-alpha+1

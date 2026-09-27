@@ -1,4 +1,4 @@
-# SkyUI Architecture
+# HMI UI Architecture
 
 Package version: `0.3.0-alpha+1`
 
@@ -10,9 +10,9 @@ This document separates the current implementation from the intended architectur
 
 Known gaps and release blockers are tracked in `docs/automotive_hmi_audit.md`.
 
-## What SkyUI is
+## What HMI UI is
 
-SkyUI is an automotive-styled Flutter HMI prototype containing a dashboard and local Navigation, Media, Phone, Vehicle, and Climate UI simulations.
+HMI UI is an automotive-styled Flutter HMI prototype containing a dashboard and local Navigation, Media, Phone, Vehicle, and Climate UI simulations.
 
 It is not:
 
@@ -47,7 +47,7 @@ Mock data must remain identifiable as simulated. A future vehicle build must not
 ## Current implementation
 
 ```text
-SkyUIApp
+HmiUiApp
 ├── Header
 │   └── DriveModeService debug listener in debug builds
 └── HomeScreen

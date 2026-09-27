@@ -1,6 +1,6 @@
 {
-    "name": "skyui",
-    "short_name": "skyui",
+    "name": "hmi_ui",
+    "short_name": "hmi_ui",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

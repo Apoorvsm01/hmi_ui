@@ -1,4 +1,4 @@
-# SkyUI Design System
+# HMI UI Design System
 
 Package version: `0.3.0-alpha+1`
 
@@ -6,13 +6,13 @@ Status: prototype visual language and design requirements
 
 ## Purpose
 
-This document defines the intended SkyUI visual language, interaction rules, and validation requirements. It is not evidence of physical-display, driver-workload, accessibility, or performance compliance.
+This document defines the intended HMI UI visual language, interaction rules, and validation requirements. It is not evidence of physical-display, driver-workload, accessibility, or performance compliance.
 
 The current implementation is partially tokenized. Inline colors, typography, spacing, and radii remain known debt.
 
 ## Design philosophy
 
-SkyUI is an automotive-styled HMI prototype with a premium, calm, technical direction. It is intended to feel like a cockpit interface rather than a conventional mobile application, but that intention has not been validated on a vehicle display.
+HMI UI is an automotive-styled HMI prototype with a premium, calm, technical direction. It is intended to feel like a cockpit interface rather than a conventional mobile application, but that intention has not been validated on a vehicle display.
 
 Design qualities:
 

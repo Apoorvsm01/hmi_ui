@@ -1,9 +1,9 @@
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-/// SkyUI Icon Library
+/// HMI UI Icon Library
 ///
 /// Sve ikonice u aplikaciji prolaze kroz ovu klasu.
-/// Kasnije možemo zameniti Phosphor sa custom SkyUI ikonama
+/// Kasnije možemo zameniti Phosphor sa custom HMI UI ikonama
 /// bez menjanja ostatka projekta.
 
 class SkyIcons {

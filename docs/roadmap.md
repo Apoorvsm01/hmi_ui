@@ -1,4 +1,4 @@
-# SkyUI Engineering Roadmap
+# HMI UI Engineering Roadmap
 
 Package version: `0.3.0-alpha+1`
 
@@ -77,7 +77,7 @@ Status: required before hardware or external release
    - Validate CSP/COOP/COEP behavior on every supported browser.
 
 7. **Release identity and provenance**
-   - Replace `com.example.skyui` and other placeholder identities with owner-approved IDs.
+   - Replace `com.example.hmi_ui` and other placeholder identities with owner-approved IDs.
    - Configure fail-closed production signing outside the repository.
    - Add reproducible clean builds, lockfile enforcement, dependency/vulnerability/secret/license scans, SBOM, artifact hash, and provenance.
 

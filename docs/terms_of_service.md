@@ -1,6 +1,6 @@
-# SkyUI Draft Prototype Notice
+# HMI UI Draft Prototype Notice
 
-**Product:** SkyUI HMI Prototype
+**Product:** HMI UI Prototype
 
 **Package version:** `0.3.0-alpha+1`
 
@@ -8,13 +8,13 @@
 
 ## 1. Purpose and approval status
 
-This document describes the technical and safety boundaries of the current SkyUI repository. It is provided for internal evaluation and requires review by the repository owner, legal counsel, safety engineering, security engineering, and vehicle-platform owners before external distribution.
+This document describes the technical and safety boundaries of the current HMI UI repository. It is provided for internal evaluation and requires review by the repository owner, legal counsel, safety engineering, security engineering, and vehicle-platform owners before external distribution.
 
 Repository access, compilation, or use does not by itself establish a commercial license, vehicle authorization, or permission to deploy artifacts.
 
 ## 2. Current software status
 
-SkyUI is an automotive-styled Flutter HMI prototype and local cockpit simulator. It is not:
+HMI UI is an automotive-styled Flutter HMI prototype and local cockpit simulator. It is not:
 
 - a vehicle controller;
 - a production infotainment platform;
@@ -48,7 +48,7 @@ The UI must not be used as a direct raw-bus command path.
 
 ## 5. Safety and regulatory boundary
 
-SkyUI has not been assessed or certified for ISO 26262, SOTIF, UNECE R155/R156, FMVSS, or another vehicle safety/cybersecurity regime. Formal compliance requires an approved scope, evidence, owners, and independent review.
+HMI UI has not been assessed or certified for ISO 26262, SOTIF, UNECE R155/R156, FMVSS, or another vehicle safety/cybersecurity regime. Formal compliance requires an approved scope, evidence, owners, and independent review.
 
 The UI must never replace primary driving instrumentation, warnings, braking, steering, airbags, ABS, powertrain-fault, or other safety-critical indications.
 
@@ -75,7 +75,7 @@ Current development artifacts are not production-signed or approved for vehicle 
 
 Android release configuration currently uses:
 
-- placeholder namespace and application ID `com.example.skyui`;
+- placeholder namespace and application ID `com.example.hmi_ui`;
 - debug signing configuration;
 - no approved update path or production key-management process.
 

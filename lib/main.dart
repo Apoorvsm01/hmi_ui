@@ -5,11 +5,11 @@ import 'widgets/header/header.dart';
 import 'screens/home/home_screen.dart';
 
 void main() {
-  runApp(const SkyUIApp());
+  runApp(const HmiUiApp());
 }
 
-class SkyUIApp extends StatelessWidget {
-  const SkyUIApp({super.key});
+class HmiUiApp extends StatelessWidget {
+  const HmiUiApp({super.key});
 
   @override
   Widget build(BuildContext context) {

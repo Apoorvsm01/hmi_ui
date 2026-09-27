@@ -4,7 +4,7 @@ import '../../core/theme/colors.dart';
 import '../../core/theme/radius.dart';
 
 /// Small pill flagging fixture/demo content, matching the "DEMO DATA" chip
-/// convention used elsewhere in SkyUI (see `VehicleCard`).
+/// convention used elsewhere in HMI UI (see `VehicleCard`).
 class SimulatedTag extends StatelessWidget {
   final String label;
 

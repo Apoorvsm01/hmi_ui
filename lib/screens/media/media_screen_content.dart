@@ -21,13 +21,13 @@ class MediaTrack {
   });
 }
 
-/// Automotive Music & Sound Experience for SkyUI
+/// Automotive Music & Sound Experience for HMI UI
 ///
 /// Designed to occupy Sections 1 & 2 of the 21:9 ultrawide cockpit layout,
 /// leaving the Navigation Card anchored in Section 3 on the far right.
 ///
 /// Features:
-/// - Sources navigation (SkyUI Sounds, Spotify, Radio DAB+, Bluetooth)
+/// - Sources navigation (HMI UI Sounds, Spotify, Radio DAB+, Bluetooth)
 /// - Interactive track queue & library with live playing equalizer indicator
 /// - Realistic spinning vinyl record visualizer with center badge
 /// - Dynamic real-time audio spectrum waveform visualizer
@@ -46,7 +46,7 @@ class _MediaScreenContentState extends State<MediaScreenContent>
     with TickerProviderStateMixin {
   int _selectedSourceIndex = 0;
   final List<String> _sources = const [
-    'SkyUI Sounds',
+    'HMI UI Sounds',
     'Spotify',
     'Radio DAB+',
     'Bluetooth',
@@ -55,7 +55,7 @@ class _MediaScreenContentState extends State<MediaScreenContent>
   final List<MediaTrack> _queue = const [
     MediaTrack(
       title: 'Night Drive',
-      artist: 'SkyUI Sounds',
+      artist: 'HMI UI Sounds',
       album: 'Night Drive EP',
       duration: '05:00',
       durationSeconds: 300,
@@ -69,7 +69,7 @@ class _MediaScreenContentState extends State<MediaScreenContent>
     ),
     MediaTrack(
       title: 'Electric Velocity',
-      artist: 'SkyUI Sounds',
+      artist: 'HMI UI Sounds',
       album: 'Pure Electric LP',
       duration: '03:48',
       durationSeconds: 228,
@@ -90,7 +90,7 @@ class _MediaScreenContentState extends State<MediaScreenContent>
     ),
     MediaTrack(
       title: 'Midnight Cruise',
-      artist: 'SkyUI Sounds',
+      artist: 'HMI UI Sounds',
       album: 'Night Drive EP',
       duration: '04:50',
       durationSeconds: 290,

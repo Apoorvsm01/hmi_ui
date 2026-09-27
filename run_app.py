@@ -10,7 +10,7 @@ from pathlib import Path
 
 HOST = "127.0.0.1"
 DIRECTORY = Path(__file__).resolve().parent / "build" / "web"
-BUILD_STAMP = DIRECTORY / ".skyui-launcher-build"
+BUILD_STAMP = DIRECTORY / ".hmi_ui-launcher-build"
 EXPECTED_PORT = None
 
 CONTENT_SECURITY_POLICY = (
@@ -157,7 +157,7 @@ def launch_browser(port):
     for browser in browser_candidates():
         try:
             process = subprocess.Popen([str(browser), *app_flags])
-            print(f"[+] Launched SkyUI in {browser.stem} App Mode.")
+            print(f"[+] Launched HMI UI in {browser.stem} App Mode.")
             print("[+] Close the window when you are done.")
             return process
         except OSError:
@@ -193,11 +193,11 @@ def main():
         EXPECTED_PORT = server.server_address[1]
         server_thread = threading.Thread(
             target=server.serve_forever,
-            name="skyui-local-server",
+            name="hmi_ui-local-server",
             daemon=True,
         )
         server_thread.start()
-        print(f"[*] Starting SkyUI server on http://{HOST}:{EXPECTED_PORT}...")
+        print(f"[*] Starting HMI UI server on http://{HOST}:{EXPECTED_PORT}...")
 
         process = None
         try:
@@ -215,7 +215,7 @@ def main():
             server.shutdown()
             server_thread.join(timeout=2)
 
-    print("[*] SkyUI session closed.")
+    print("[*] HMI UI session closed.")
     return 0
 
 

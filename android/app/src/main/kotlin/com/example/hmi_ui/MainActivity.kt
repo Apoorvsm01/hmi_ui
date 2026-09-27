@@ -1,4 +1,4 @@
-package com.example.skyui
+package com.example.hmi_ui
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -8,13 +8,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:skyui/main.dart';
-import 'package:skyui/screens/academics/academics_screen_content.dart';
-import 'package:skyui/screens/fleet/fleet_cockpit_screen.dart';
-import 'package:skyui/screens/media/media_screen_content.dart';
-import 'package:skyui/screens/navigation/navigation_screen_content.dart';
-import 'package:skyui/screens/phone/phone_screen.dart';
-import 'package:skyui/services/drive_mode_service.dart';
+import 'package:hmi_ui/main.dart';
+import 'package:hmi_ui/screens/academics/academics_screen_content.dart';
+import 'package:hmi_ui/screens/fleet/fleet_cockpit_screen.dart';
+import 'package:hmi_ui/screens/media/media_screen_content.dart';
+import 'package:hmi_ui/screens/navigation/navigation_screen_content.dart';
+import 'package:hmi_ui/screens/phone/phone_screen.dart';
+import 'package:hmi_ui/services/drive_mode_service.dart';
 
 void main() {
   final driveMode = DriveModeService.instance;
@@ -177,7 +177,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
 
     await tester.tap(find.byKey(const ValueKey('sidebar-Media')));
     await tester.pump(const Duration(milliseconds: 80));
@@ -216,7 +216,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
     await tester.tap(find.byKey(const ValueKey('sidebar-Phone')));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
@@ -258,7 +258,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
     await tester.tap(find.byKey(const ValueKey('sidebar-Phone')));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
@@ -298,7 +298,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
 
     await tester.tap(find.byKey(const ValueKey('sidebar-Drive Coach')));
     await tester.pump();
@@ -325,7 +325,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
 
     await tester.tap(find.byKey(const ValueKey('sidebar-Fleet Co-Pilot')));
     await tester.pump();
@@ -351,7 +351,7 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
 
     final vehicleButton = find.byKey(const ValueKey('sidebar-Vehicle'));
     final settingsButton = find.byKey(const ValueKey('sidebar-Settings'));
@@ -366,13 +366,13 @@ void main() {
     expect(settingsTap.onTap, isNull);
   });
 
-  testWidgets('SkyUI app loads', (WidgetTester tester) async {
+  testWidgets('HMI UI app loads', (WidgetTester tester) async {
     tester.view.physicalSize = const Size(1680, 720);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
 
-    await tester.pumpWidget(const SkyUIApp());
+    await tester.pumpWidget(const HmiUiApp());
 
     expect(find.byType(Scaffold), findsOneWidget);
     expect(find.byType(SafeArea), findsOneWidget);

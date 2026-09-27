@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/colors.dart';
 
-/// Automotive Phone Screen for SkyUI
+/// Automotive Phone Screen for HMI UI
 ///
 /// Implements a dual-card digital cockpit telephony hub:
 /// - Left Card: Communication Hub (Dialer, sub-tabs, interactive keypad, recents list with letter avatars)

@@ -1,10 +1,10 @@
 # CLAUDE.md
 
-# SkyUI
+# HMI UI
 
 ## Project status
 
-SkyUI is an automotive-styled Flutter HMI prototype for a future in-vehicle ecosystem. It is not production software, a vehicle controller, a certified automotive HMI, or a security-validated platform.
+HMI UI is an automotive-styled Flutter HMI prototype for a future in-vehicle ecosystem. It is not production software, a vehicle controller, a certified automotive HMI, or a security-validated platform.
 
 The current evidence boundary is a 1680×720 landscape simulator. Physical display, broader resolution, accessibility, performance, lifecycle, safety, security, hardware, and compliance behavior are unverified.
 

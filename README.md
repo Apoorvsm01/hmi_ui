@@ -1,7 +1,7 @@
-# SkyUI
+# HMI UI
 
 <p align="center">
-  <img src="assets/images/logo.png" alt="SkyUI Logo" width="160"/>
+  <img src="assets/images/logo.png" alt="HMI UI Logo" width="160"/>
 </p>
 
 <p align="center">
@@ -18,11 +18,11 @@
 
 ## Executive overview
 
-SkyUI is an internal Flutter HMI prototype for a future in-vehicle ecosystem. It provides a dark cockpit dashboard and local prototype Navigation, Media, Phone, Vehicle, and Climate experiences.
+HMI UI is an internal Flutter HMI prototype for a future in-vehicle ecosystem. It provides a dark cockpit dashboard and local prototype Navigation, Media, Phone, Vehicle, and Climate experiences.
 
 All vehicle, phone, navigation, media, climate, connectivity, speed, route, trip, and diagnostic values are fixtures or local UI state unless explicitly identified as an implemented integration.
 
-> **Prototype boundary:** SkyUI is not a vehicle controller, production infotainment platform, certified automotive HMI, cybersecurity-assured release, or fully offline runtime. The only current evidence boundary is a 1680×720 landscape widget and headless-browser smoke test. Physical-display, resolution-matrix, accessibility, performance, lifecycle, safety, security, hardware, and compliance validation remain pending.
+> **Prototype boundary:** HMI UI is not a vehicle controller, production infotainment platform, certified automotive HMI, cybersecurity-assured release, or fully offline runtime. The only current evidence boundary is a 1680×720 landscape widget and headless-browser smoke test. Physical-display, resolution-matrix, accessibility, performance, lifecycle, safety, security, hardware, and compliance validation remain pending.
 
 The current application implements no backend, remote telemetry, crash reporting, analytics, vehicle-signal collection, or cloud synchronization.
 
@@ -39,7 +39,7 @@ The current application implements no backend, remote telemetry, crash reporting
 | Navigation | Local simulation | Custom map and fixture destinations; no GPS, map provider, routing engine, or live traffic |
 | Climate bar | Local simulation | Visual controls only; no HVAC commands, validated limits, or automatic regulation |
 | Local web launcher | Development tool | Loopback server, CSP-compatible build, local CanvasKit, and enforced build stamp |
-| Android release | Blocked | Placeholder `com.example.skyui` identity and debug signing |
+| Android release | Blocked | Placeholder `com.example.hmi_ui` identity and debug signing |
 | Hardware, CAN, OTA, AI, backend | Not integrated | No service, trust boundary, or production contract exists |
 
 Vehicle and Settings sidebar entries are visibly disabled because their screens do not exist. Unsupported map camera controls and unavailable vehicle actions are also disabled rather than presented as working features.
@@ -191,7 +191,7 @@ These checks do not establish target-device performance, accessibility, safety, 
 
 ## Release warning
 
-Android release artifacts must not be distributed while the application identity and signing configuration remain unresolved. The current `com.example.skyui` package ID and debug signing key are development placeholders.
+Android release artifacts must not be distributed while the application identity and signing configuration remain unresolved. The current `com.example.hmi_ui` package ID and debug signing key are development placeholders.
 
 Before any pilot or vehicle connection, close the release gates in `docs/automotive_hmi_audit.md`, including legal classification, reproducible build, supply-chain controls, production signing, TARA/HARA, driver-interaction policy, durable session contracts, signal validity, target-platform validation, and non-actuating HIL/vehicle testing.
 
@@ -207,6 +207,6 @@ Before any pilot or vehicle connection, close the release gates in `docs/automot
 
 ## Prototype and testing notice
 
-SkyUI is intended for parked evaluation, desktop simulation, and controlled non-road development. It must not be used as a live driving interface, primary cluster, safety control, driver-monitoring aid, or vehicle actuator gateway.
+HMI UI is intended for parked evaluation, desktop simulation, and controlled non-road development. It must not be used as a live driving interface, primary cluster, safety control, driver-monitoring aid, or vehicle actuator gateway.
 
 The current build is provided as-is for internal evaluation. The repository notice is not a substitute for legal review, corporate authorization, vehicle approval, or a complete distribution agreement.

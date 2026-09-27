@@ -98,7 +98,7 @@ class _MediaCardState extends State<MediaCard> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          'SkyUI Sounds',
+                          'HMI UI Sounds',
                           style: TextStyle(
                             color: AppColors.textPrimary.withValues(alpha: 0.5),
                             fontSize: 12,

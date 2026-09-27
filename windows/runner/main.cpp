@@ -27,7 +27,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(20, 20);
   Win32Window::Size size(1680, 720);
-  if (!window.Create(L"SkyUI", origin, size)) {
+  if (!window.Create(L"HMI UI", origin, size)) {
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
