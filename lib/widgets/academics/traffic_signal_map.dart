@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/colors.dart';
@@ -33,11 +35,15 @@ class TrafficSignalMap extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final size = Size(constraints.maxWidth, constraints.maxHeight);
-          final intersection = Rect.fromLTWH(
-            size.width * 0.5 - size.width * 0.17,
-            size.height * 0.24,
-            size.width * 0.34,
-            size.height * 0.20,
+          // Tied to a single dimension (the shorter side) so the box is
+          // always a true square, regardless of the panel's aspect ratio —
+          // sizing width and height off size.width/size.height independently
+          // only looked square at one specific ratio.
+          final side = math.min(size.width, size.height) * 0.28;
+          final intersection = Rect.fromCenter(
+            center: Offset(size.width * 0.5, size.height * 0.34),
+            width: side,
+            height: side,
           );
 
           return Stack(
@@ -190,8 +196,11 @@ class _IntersectionPainter extends CustomPainter {
       canvas.drawLine(Offset(0, y), Offset(size.width, y), gridPaint);
     }
 
-    final egoRoadLeft = size.width * 0.5 - size.width * 0.15;
-    final egoRoadRight = size.width * 0.5 + size.width * 0.15;
+    // Matches the (now-square) intersection box width exactly, so the
+    // vertical road band's edges line up with the box instead of drifting
+    // independently of it.
+    final egoRoadLeft = intersection.left;
+    final egoRoadRight = intersection.right;
     final crossRoadTop = intersection.top;
     final crossRoadBottom = intersection.bottom;
 
